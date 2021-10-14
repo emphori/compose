@@ -1,0 +1,7 @@
+# Node.js and NPM related paths
+node_modules/
+npm-debug.log
+
+# Build output
+dist/
+
