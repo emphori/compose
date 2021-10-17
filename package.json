@@ -1,0 +1,37 @@
+
+{
+  "name": "@emphori/stitch",
+  "description": "",
+  "keywords": [],
+  "stitchor": "Emphori (https://emphori.co)",
+  "contributors": [
+    "Iain Reid <iainreid382@gmail.com> (https://iainjreid.com)"
+  ],
+  "homepage": "https://github.com/emphori/stitch#readme",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/index.js",
+    "dist/index.d.ts"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^4.6.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emphori/stitch.git"
+  },
+  "bugs": {
+    "url": "https://github.com/emphori/stitch/issues"
+  }
+
+}
