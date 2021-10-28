@@ -3,27 +3,27 @@
  * functional manner.
  */
 export class Chain<C1, E1, V1, V2> {
-  constructor(private fn: (this: C1, _: V1) => Promise<V2, E1>) {}
+  constructor(private fn: (this: C1, _: V1) => V2 | Promise<V2, E1>) {}
 
-  run(context: C1, value?: V1): Promise<V2, E1> {
-    return this.fn.call(context, value!)
+  run = (context: C1, value?: V1): Promise<V2, E1> => {
+    return Promise.resolve(this.fn.call(context, value!));
   }
 
-  then<V3, E2>(fn: (this: C1, _: V2) => Promise<V3, E2>): Chain<C1, E1 | E2, V1, V3> {
-    const run = this.run.bind(this);
+  then<V3, E2>(fn: (this: C1, _: V2) => V3 | Promise<V3, E2>): Chain<C1, E1 | E2, V1, V3> {
+    const { run } = this;
     return new Chain(function (this: C1, value: V1): Promise<V3, E1> {
       return run(this, value).then(fn.bind(this), Promise.reject);
     });
   }
 
-  recover<E2>(fn: (this: C1, _: E1) => Promise<V2, E2>): Chain<C1, E2, V1, V2> {
-    const run = this.run.bind(this);
+  recover<E2>(fn: (this: C1, _: E1) => E2 | Promise<V2, E2>): Chain<C1, E2, V1, V2> {
+    const { run } = this;
     return new Chain(function (this: C1, value: V1): Promise<V2, E2> {
       return run(this, value).then(Promise.resolve, fn.bind(this));
     });
   }
 
-  static from<C, E, V1, V2>(fn: (this: C, _: V1) => Promise<V2, E>): Chain<C, E, V1, V2> {
+  static from<C, E, V1, V2>(fn: (this: C, _: V1) => V2 | Promise<V2, E>): Chain<C, E, V1, V2> {
     return new Chain(fn);
   }
 }
@@ -53,7 +53,7 @@ interface PromiseConstructor extends globalThis.PromiseConstructor {
   /**
    * @todo Document the "resolve" method on the "PromiseConstructor"
    */
-  resolve<T>(val: T | Promise<T, never>): Promise<T, never>;
+  resolve<T1, T2>(val: T1 | Promise<T1, T2>): Promise<T1, T2>;
 
   /**
    * @todo Document the empty "resolve" method on the "PromiseConstructor"
@@ -63,7 +63,7 @@ interface PromiseConstructor extends globalThis.PromiseConstructor {
   /**
    * @todo Document the "reject" method on the "PromiseConstructor"
    */
-  reject<T>(val: T): Promise<never, T>;
+  reject<T1, T2>(val: T2): Promise<T1, T2>;
 }
 
 export const Promise: PromiseConstructor = globalThis.Promise as any;
