@@ -27,3 +27,6 @@ npm run build -- -w
 npm test
 ```
 
+## License
+
+[The MIT License](./LICENSE)

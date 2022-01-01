@@ -1,0 +1,50 @@
+/**
+  * A strongly typed extension to the Promise interface, allowing for type
+  * assertions on both the resolved and rejected values.
+  */
+interface Promise<T, E = unknown> {
+  then<RT, RE>(
+    resolve?: ((_: T) => RT | Promise<RT, RE>) | null,
+    reject?: ((_: E) => RT | Promise<RT, RE>) | null,
+  ): Promise<RT, RE>;
+
+  catch<RT, RE>(
+    reject?: ((_: E) => RT | Promise<RT, RE>) | null,
+  ): Promise<RT, RE>;
+}
+
+/**
+ * @see {Promise}
+ * 
+ * @todo Add type interfaces for the remaing static methods found on a Promise
+ */
+interface PromiseConstructor {
+  new <T, E>(fn: (
+    resolve: (_: T | Promise<T, E>) => void,
+    reject: (_: E | Promise<E, E>) => void,
+  ) => void): Promise<T, E>;
+
+  /**
+   * @todo Document the "resolve" method on the "PromiseConstructor"
+   */
+  resolve<T, E>(val: T | Promise<T, E>): Promise<T, E>;
+
+  resolve<T>(val: T): Promise<T, never>;
+
+  /**
+   * @todo Document the empty "resolve" method on the "PromiseConstructor"
+   */
+  resolve(): Promise<void, never>;
+
+  /**
+   * @todo Document the "reject" method on the "PromiseConstructor"
+   */
+  reject<E>(val: E): Promise<never, E>;
+
+  /**
+   * @todo Document the "reject" method on the "PromiseConstructor"
+   */
+  reject(): Promise<never, void>;
+}
+
+declare var Promise: PromiseConstructor;

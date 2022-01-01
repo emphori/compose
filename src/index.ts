@@ -1,69 +1,43 @@
 /**
  * A composition factory that glues strongly typed Promises together in a
  * functional manner.
+ * 
+ * @type {C1} The context or scope that the chain runs under
  */
 export class Chain<C1, E1, V1, V2> {
-  constructor(private fn: (this: C1, _: V1) => V2 | Promise<V2, E1>) {}
+  constructor(private fn: (this: C1, val: V1) => V2 | Promise<V2, E1>) {}
 
-  run = (context: C1, value?: V1): Promise<V2, E1> => {
-    return Promise.resolve(this.fn.call(context, value!));
+  /**
+   * @param context - The scope to be passed to the function chain
+   * @param val - The initial value passed to the first function
+   */
+  public run(context: C1, val: V1): Promise<V2, E1> {
+    return Promise.resolve<V2, E1>(this.fn.call(context, val!));
   }
 
-  then<V3, E2>(fn: (this: C1, _: V2) => V3 | Promise<V3, E2>): Chain<C1, E1 | E2, V1, V3> {
-    const { run } = this;
-    return new Chain(function (this: C1, value: V1): Promise<V3, E1> {
-      return run(this, value).then(fn.bind(this), Promise.reject);
+  /**
+   * @returns A new chain that includes the function provided 
+   */
+  public then<V3, E2>(fn: (this: C1, val: V2) => V3 | Promise<V3, E2>): Chain<C1, E1 | E2, V1, V3> {
+    const run = this.run.bind(this);
+
+    return new Chain(function (this: C1, val: V1): Promise<V3, E1 | E2> {
+      return run(this, val).then<V3, E2>((val) => fn.call(this, val));
     });
   }
 
-  recover<E2>(fn: (this: C1, _: E1) => E2 | Promise<V2, E2>): Chain<C1, E2, V1, V2> {
-    const { run } = this;
-    return new Chain(function (this: C1, value: V1): Promise<V2, E2> {
-      return run(this, value).then(Promise.resolve, fn.bind(this));
+  /**
+   * @returns A new chain that includes the function provided 
+   */
+  public recover<E2>(fn: (this: C1, val: E1) => V2 | Promise<V2, E2>): Chain<C1, E2, V1, V2> {
+    const run = this.run.bind(this);
+    
+    return new Chain(function (this: C1, val: V1): Promise<V2, E2> {
+      return run(this, val).catch<V2, E2>((val: any) => fn.call(this, val));
     });
   }
-
-  static from<C, E, V1, V2>(fn: (this: C, _: V1) => V2 | Promise<V2, E>): Chain<C, E, V1, V2> {
-    return new Chain(fn);
-  }
 }
 
-/**
- * A more strongly typed Promise interface that allows type assertions on both
- * the resolved and rejected values.
- */
-export interface Promise<T1, T2 = never> extends globalThis.Promise<T1> {
-  then<R1 = T1, R2 = T2>(
-    resolve: ((_: T1) => R1 | Promise<R1, R2 | T2>) | unknown,
-    reject: ((_: T2) => R2 | Promise<T1, R2 | T2>) | unknown,
-  ): Promise<R1, R2>;
+export function chain<C, E, V1 = null, V2 = unknown>(fn: (this: C, val: V1) => V2 | Promise<V2, E>): Chain<C, E, V1, V2> {
+  return new Chain(fn);
 }
-
-/**
- * @see {Promise}
- * 
- * @todo Add type interfaces for the remaing static methods found on a Promise
- */
-interface PromiseConstructor extends globalThis.PromiseConstructor {
-  new <T1, T2>(fn: (
-    resolve: (_: T1 | Promise<T1, never>) => void,
-    reject: (_: T2 | Promise<never, T2>) => void,
-  ) => void): Promise<T1, T2>;
-
-  /**
-   * @todo Document the "resolve" method on the "PromiseConstructor"
-   */
-  resolve<T1, T2>(val: T1 | Promise<T1, T2>): Promise<T1, T2>;
-
-  /**
-   * @todo Document the empty "resolve" method on the "PromiseConstructor"
-   */
-  resolve(): Promise<void, never>;
-
-  /**
-   * @todo Document the "reject" method on the "PromiseConstructor"
-   */
-  reject<T1, T2>(val: T2): Promise<T1, T2>;
-}
-
-export const Promise: PromiseConstructor = globalThis.Promise as any;
