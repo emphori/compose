@@ -1,4 +1,4 @@
-import { chain } from './index';
+import { compose } from './index';
 
 // @ts-ignore
 type TestTypes =
@@ -7,8 +7,8 @@ type TestTypes =
   | AssertType<typeof Promise.resolve, <T>(val?: T) => Promise<T, never>>
   | AssertType<typeof Promise.reject, <T>(val?: T) => Promise<never, T>>
 
-async function foo(this: string, int: number): Promise<number, never> {
-  return int
+function foo(this: string, int: number): Promise<number, never> {
+  return Promise.resolve(int)
 }
 
 function bar(this: string, val: number): Promise<string, string> {
@@ -24,13 +24,18 @@ function baz(this: string, val: string): Promise<string, number> {
   })
 }
 
+function boz(val: number): string {
+  return String(val);
+}
 
-const composition = chain(foo).then(bar).recover((err) => {
+const composition = compose(foo).then(bar).then(baz).catch<never>((err) => {
   return Promise.resolve(err + 'caught')
-}).then(baz);
+}).then(baz).catch(boz);
+
+const console = (globalThis as any).console;
 
 composition.run('foo', 1).then((result: any) => {
-  (globalThis as any).console.log('Result: ', result);
+  console.log('Result: ', result);
 }).catch((error: any) => {
-  (globalThis as any).console.log('Error: ', error);
+  console.log('Error: ', error);
 });
