@@ -1,7 +1,17 @@
-# Stitch
+# Compose
 
 A drop in extension for Promises, adding oodles of functional goodness through
 composition and taking error handling to an entirely different level.
+
+## Installing
+
+```sh
+# Using NPM
+npm install @emphori/compose -S
+
+# Using Yarn
+yarn add @emphori/compose
+```
 
 ## Getting started
 

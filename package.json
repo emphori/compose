@@ -1,12 +1,12 @@
 {
-  "name": "@emphori/stitch",
+  "name": "@emphori/compose",
   "description": "",
   "keywords": [],
-  "stitchor": "Emphori (https://emphori.co)",
+  "author": "Emphori (https://emphori.co)",
   "contributors": [
     "Iain Reid <iainreid382@gmail.com> (https://iainjreid.com)"
   ],
-  "homepage": "https://github.com/emphori/stitch#readme",
+  "homepage": "https://github.com/emphori/compose#readme",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,9 +28,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/emphori/stitch.git"
+    "url": "git+https://github.com/emphori/compose.git"
   },
   "bugs": {
-    "url": "https://github.com/emphori/stitch/issues"
+    "url": "https://github.com/emphori/compose/issues"
   }
 }
