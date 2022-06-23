@@ -3,40 +3,71 @@
 A drop in extension for Promises, adding oodles of functional goodness through
 composition and taking error handling to an entirely different level.
 
-## Installing
+
+## Features
+
+* **Lightweight and with almost no memory footprint,** the main package export
+  comes in at well below 1KB, unminified, ungzipped.
+
+* **A familiar Promise like interface** reduces the learning curve
+  dramatically.
+
+* **Robust types for TypeScript** are included in the package by default, with
+  specific attention in areas such as scope narrowing, for heavily nested and
+  complex compositions.
+
+* **Interoperable with existing code by design,** to ensure that it's easy to
+  introduce incrementally to your project without any pesky migrations.
+
+
+## Installation
+
+Compose is distributed to both NPM and GitHub Packages. Whichever registry you
+prefer to use, the installation instructions should remain the same.
 
 ```sh
 # Using NPM
 npm install @emphori/compose -S
 
-# Using Yarn
+# Or, using Yarn
 yarn add @emphori/compose
 ```
 
-## Getting started
 
-```sh
-# Install the dependencies
-npm ci
+## Examples
+
+```ts
+import { compose } from '@emphori/compose'
+
+// (userId: string) => Promise<Org, UserNotFound | OrgNotFound>
+const getUserOrg = compose(getUser).then(getOrgForUser)
+
+function getUser(userId: string): Promise<User, UserNotFound> {
+  return User.getById(userId).then((user) => {
+    return user ?? Promise.reject(UserNotFound)
+  })
+}
+
+function getOrgForUser(user: User): Promise<Org, OrgNotFound> {
+  return Org.getById(user.orgId).then((org) => {
+    return org ?? Promise.reject(OrgNotFound)
+  })
+}
 ```
 
-## Building
 
-```sh
-# Build the package
-npm run build
+## Contributing
 
-# Or, watch for changes
-npm run build -- -w
-```
+If you're interested in contributing, or just want to learn more about Compose,
+then head over to the [repository][repo] where you'll hopefully find all the
+information you need.
 
-## Testing
+[repo]: https://github.com/emphori/compose
 
-```sh
-# Run the tests
-npm test
-```
 
-## License
+## Licence
 
-[The MIT License](./LICENSE)
+This project is released under the [MIT License][license]. Enjoy responsibly ❤️
+
+[license]: https://github.com/emphori/compose/blob/HEAD/LICENSE
+

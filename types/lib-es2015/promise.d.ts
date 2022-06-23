@@ -4,18 +4,18 @@
   */
 interface Promise<T, E = unknown> {
   then<RT, RE>(
-    resolve?: ((_: T) => RT | Promise<RT, RE>) | null,
-    reject?: ((_: E) => RT | Promise<RT, RE>) | null,
+    onfulfilled?: ((_: T) => RT | Promise<RT, RE>) | null,
+    onrejected?: ((_: E) => RT | Promise<RT, RE>) | null,
   ): Promise<RT, RE>;
 
   catch<RT, RE>(
-    reject?: ((_: E) => RT | Promise<RT, RE>) | null,
+    onrejected?: ((_: E) => RT | Promise<RT, RE>) | null,
   ): Promise<RT, RE>;
 }
 
 /**
  * @see {Promise}
- * 
+ *
  * @todo Add type interfaces for the remaing static methods found on a Promise
  */
 interface PromiseConstructor {
@@ -27,8 +27,7 @@ interface PromiseConstructor {
   /**
    * @todo Document the "resolve" method on the "PromiseConstructor"
    */
-  resolve<T, E>(val: T | Promise<T, E>): Promise<T, E>;
-
+  resolve<T, E>(val: Promise<T, E>): Promise<T, E>;
   resolve<T>(val: T): Promise<T, never>;
 
   /**
