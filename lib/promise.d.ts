@@ -1,15 +1,14 @@
 /**
-  * A strongly typed extension to the Promise interface, allowing for type
-  * assertions on both the resolved and rejected values.
-  */
-interface Promise<T, E = unknown> {
-  then<RT, RE>(
-    onfulfilled?: ((_: T) => RT | Promise<RT, RE>) | null,
-    onrejected?: ((_: E) => RT | Promise<RT, RE>) | null,
-  ): Promise<RT, RE>;
+ * A strongly typed extension to the Promise interface, allowing for type
+ * assertions on both the resolved and rejected values.
+ */
+export interface Promise<T, E> {
+  then<RT = void, RE = never>(
+    onfulfilled: ((_: T) => RT | Promise<RT, RE>) | null,
+  ): Promise<RT, E | RE>;
 
   catch<RT, RE>(
-    onrejected?: ((_: E) => RT | Promise<RT, RE>) | null,
+    onrejected: ((_: E) => RT | Promise<RT, RE>) | null,
   ): Promise<RT, RE>;
 }
 
