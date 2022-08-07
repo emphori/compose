@@ -1,6 +1,6 @@
 # Compose
 
-A drop in extension for Promises, adding oodles of functional goodness through
+A drop-in extension for Promises, adding oodles of functional goodness through
 composition and taking error handling to an entirely different level.
 
 
@@ -22,8 +22,8 @@ composition and taking error handling to an entirely different level.
 
 ## Installation
 
-Compose is distributed to both NPM and GitHub Packages. Whichever registry you
-prefer to use, the installation instructions should remain the same.
+Compose is available through both NPM and GitHub Packages. Whichever registry
+you prefer to use, the installation instructions should remain the same.
 
 ```sh
 # Using NPM
@@ -37,20 +37,21 @@ yarn add @emphori/compose
 ## Examples
 
 ```ts
-import { compose } from '@emphori/compose'
+import { compose, reject } from '@emphori/compose'
+import type { Promise } from '@emphori/promise'
 
 // (userId: string) => Promise<Org, UserNotFound | OrgNotFound>
 const getUserOrg = compose(getUser).then(getOrgForUser)
 
 function getUser(userId: string): Promise<User, UserNotFound> {
   return User.getById(userId).then((user) => {
-    return user ?? Promise.reject(UserNotFound)
+    return user ?? reject(UserNotFound)
   })
 }
 
 function getOrgForUser(user: User): Promise<Org, OrgNotFound> {
   return Org.getById(user.orgId).then((org) => {
-    return org ?? Promise.reject(OrgNotFound)
+    return org ?? reject(OrgNotFound)
   })
 }
 ```

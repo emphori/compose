@@ -10,6 +10,10 @@ the right place!
 [readme]: https://github.com/emphori/compose/blob/HEAD/README.md
 
 
+<!-- Note: This is commented out until we sort out our contribution processes,
+           if you're reading this though, we'll still be very happy to accept
+           contributions in the meantime!
+
 ## Contributing
 
 We welcome contributions of any size from anyone. Please do take a moment to
@@ -18,6 +22,7 @@ our process.
 
 [contributing]: https://github.com/emphori/.github/blob/HEAD/CONTRIBUTING.md
 
+-->
 
 ## Issues
 
