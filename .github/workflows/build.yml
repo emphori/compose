@@ -18,9 +18,3 @@ jobs:
 
     - name: Run tests
       run: npm t
-
-    - name: Release
-      uses: emphori/actions/semantic-release@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
