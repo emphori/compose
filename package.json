@@ -1,6 +1,5 @@
 {
   "name": "@emphori/compose",
-  "version": "0.0.1",
   "description": "A lightweight functional composition helper",
   "keywords": [],
   "author": "Emphori (https://emphori.co)",
@@ -11,25 +10,19 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": {
-      "import": "./lib/compose.js"
-    },
-    "./promise": {
-      "import": "./lib/promise.js"
-    }
+    ".": "./lib/compose.js"
   },
   "files": [
     "lib/compose.d.ts",
-    "lib/compose.js",
-    "lib/promise.d.ts",
-    "lib/promise.js"
+    "lib/compose.js"
   ],
   "scripts": {
-    "test": "tsc --noEmit --checkJs --strict --allowSyntheticDefaultImports --target es6 lib/*.js"
+    "test": "tsc --noEmit --checkJs --strict --module NodeNext lib/*.js"
   },
   "devDependencies": {
-    "@types/node": "^18.6.2",
-    "typescript": "^4.6.2"
+    "@emphori/promise": "../promise",
+    "@types/node": "^18.6.3",
+    "typescript": "^4.7.4"
   },
   "publishConfig": {
     "access": "public"
