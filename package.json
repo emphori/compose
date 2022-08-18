@@ -17,10 +17,12 @@
     "lib/compose.js"
   ],
   "scripts": {
-    "test": "tsc --noEmit --checkJs --strict --module NodeNext lib/*.js"
+    "test": "npm run test:types && npm run test:source",
+    "test:types": "tsc --noEmit --checkJs --strict --module NodeNext lib/*.js",
+    "test:source": "node --test"
   },
   "devDependencies": {
-    "@emphori/promise": "../promise",
+    "@emphori/promise": "^1.0.0",
     "@types/node": "^18.6.3",
     "typescript": "^4.7.4"
   },
@@ -33,5 +35,10 @@
   },
   "bugs": {
     "url": "https://github.com/emphori/compose/issues"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
   }
 }
