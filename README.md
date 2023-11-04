@@ -22,8 +22,8 @@ composition and taking error handling to an entirely different level.
 
 ## Installation
 
-Compose is available through both NPM and GitHub Packages. Whichever registry
-you prefer to use, the installation instructions should remain the same.
+Compose is available from the NPM registry and as a GitHub Package. Whichever
+source you prefer to use, the installation should remain the same.
 
 ```sh
 # Using NPM
