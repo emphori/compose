@@ -1,7 +1,17 @@
 {
   "name": "@emphori/compose",
   "description": "A lightweight functional composition helper",
-  "keywords": [],
+  "keywords": [
+    "functional",
+    "functional-programming",
+    "promise",
+    "promises",
+    "railway-orientated",
+    "railway-orientated-programming",
+    "strongly-typed",
+    "types",
+    "typescript"
+  ],
   "author": "Emphori (https://emphori.co)",
   "contributors": [
     "Iain Reid <iainreid382@gmail.com> (https://iainjreid.com)"
