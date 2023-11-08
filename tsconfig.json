@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+
+    /* Basic Options */
+    "target": "ESNext",
+    "module": "NodeNext",
+    "outDir": "./dist",
+    "declaration": true,
+    "lib": [
+      "ESNext"
+    ],
+
+    /* Strict Type-Checking Options */
+    "strict": true,
+    "noImplicitAny": true,
+
+    /* Additional Checks */
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* Module Resolution Options */
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+  },
+  "include": [
+    "lib"
+  ]
+}

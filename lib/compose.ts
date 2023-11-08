@@ -1,4 +1,4 @@
-import type { Promise } from "@emphori/promise";
+import { Promise } from "@emphori/promise";
 
 export declare type ComposableFunction<C1, I1 extends any[], R1, E1> =
   (this: C1, ...args: I1) => Promise<R1, E1>;
@@ -33,15 +33,33 @@ export interface Composition<C1, I1 extends any[], R1, E1> extends ComposableFun
 }
 
 /**
- * @todo Document the "compose" function
+ * A composition factory that chains Promises together in a functional manner.
  *
- * @param fn
+ * @param fn - The function to compose
  */
-export declare function compose<C1, I1 extends any[], R1, E1 = unknown>(fn: ComposableFunction<C1, I1, R1, E1>):
-  Composition<C1, I1, R1, E1>;
+export function compose<C1, I1 extends any[], R1, E1 = unknown>(fn: ComposableFunction<C1, I1, R1, E1>): Composition<C1, I1, R1, E1> {
+  return Object.setPrototypeOf(function (this: C1, ...args: I1) {
+    return fn.apply(this, args);
+  }, compose);
+}
 
-export declare function resolve<T>(val: T): Promise<T, never>;
-export declare function resolve(): Promise<void, never>;
+Object.defineProperty(compose, 'then', {
+  value: function (this: any, fn: any): any {
+    const run = this;
+    return compose(function (...args) {
+      return run.apply(this, args).then((val: any) => fn.call(this, val));
+    });
+  },
+});
 
-export declare function reject<T>(val: T): Promise<never, T>;
-export declare function reject(): Promise<never, void>;
+Object.defineProperty(compose, 'catch', {
+  value: function (this: any, fn: any): any {
+    const run = this;
+    return compose(function (...args) {
+      return run.apply(this, args).catch((val: any) => fn.call(this, val));
+    });
+  },
+});
+
+export const resolve: typeof Promise.resolve = Promise.resolve.bind(Promise);
+export const reject: typeof Promise.reject = Promise.reject.bind(Promise);
