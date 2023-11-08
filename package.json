@@ -10,11 +10,11 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": "./lib/compose.js"
+    ".": "./dist/compose.js"
   },
   "files": [
-    "lib/compose.d.ts",
-    "lib/compose.js"
+    "dist/compose.d.ts",
+    "dist/compose.js"
   ],
   "scripts": {
     "build": "tsc -b",
