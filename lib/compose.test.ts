@@ -1,14 +1,9 @@
-"use strict";
-
 import { Promise } from '@emphori/promise';
 import assert from 'node:assert';
-import test from 'node:test';
+import { describe, it } from 'node:test';
 import { Composition, UnaryComposableFunction, UnreachableFunctionWarning, compose, reject, resolve } from './compose.js';
 
-/**
- * Maintaining safe compositions.
- */
-{
+describe('Maintaining safe compositions', () => {
   const composition1: Composition<any, [string, string], string, never> =
     compose(safeTarget);
 
@@ -21,25 +16,26 @@ import { Composition, UnaryComposableFunction, UnreachableFunctionWarning, compo
   const composition4: Composition<any, [string, string], number, never> =
     composition3.then(safeStringLength);
 
-  test('Maintaining safe compositions', async () => {
-    await composition4('pizza', 'tomato').then((val) => {
+  it('should maintain a safe composition (1)', () => {
+    return composition4('pizza', 'tomato').then((val) => {
       assert.equal(val, 11);
     });
+  });
 
-    await composition4('cheese', 'spinach').then((val) => {
+  it('should maintain a safe composition (1)', () => {
+    return composition4('cheese', 'spinach').then((val) => {
       assert.equal(val, 13);
     });
+  });
 
-    await composition4('mushroom', 'pineapple').then((val) => {
+  it('should maintain a safe composition (1)', () => {
+    return composition4('mushroom', 'pineapple').then((val) => {
       assert.equal(val, 17);
     });
   });
-}
+});
 
-/**
- * Adding errors to originally safe compositions.
- */
-{
+describe('Adding errors to originally safe compositions', () => {
   const composition1: Composition<any, [string, string], string, never> =
     compose(safeTarget);
 
@@ -55,25 +51,26 @@ import { Composition, UnaryComposableFunction, UnreachableFunctionWarning, compo
   // @ts-expect-error
   (): Composition<any, [string, string], number, number> => composition3;
 
-  test('Adding errors to originally safe compositions', async () => {
-    await composition3('pizza', 'tomato').then((val) => {
+  it('should add errors to an originally safe composition (1)', () => {
+    return composition3('pizza', 'tomato').then((val) => {
       assert.equal(val, 11);
     });
+  });
 
-    await composition3('cheese', 'spinach').then((val) => {
+  it('should add errors to an originally safe composition (2)', () => {
+    return composition3('cheese', 'spinach').then((val) => {
       assert.equal(val, 13);
     });
+  });
 
-    await composition3('mushroom', 'pineapple').then((val) => {
+  it('should add errors to originally safe composition (3)', () => {
+    return composition3('mushroom', 'pineapple').then((val) => {
       assert.equal(val, 17);
     });
   });
-}
+});
 
-/**
- * Keeping track of errors in originally unsafe compositions.
- */
-{
+describe('Keeping track of errors in originally unsafe compositions', () => {
   const composition1: Composition<any, [string, string], string, string> =
     compose(unsafeTarget);
 
@@ -86,25 +83,26 @@ import { Composition, UnaryComposableFunction, UnreachableFunctionWarning, compo
   const composition4: Composition<any, [string, string], number, string> =
     composition3.then(safeStringLength);
 
-  test('Keeping track of errors in originally unsafe compositions', async () => {
-    await composition4('pizza', 'tomato').then((val) => {
+  it('should keep track of errors in an originally unsafe composition (1)', () => {
+    return composition4('pizza', 'tomato').then((val) => {
       assert.equal(val, 11);
     });
+  });
 
-    await composition4('cheese', 'spinach').then((val) => {
+  it('should keep track of errors in an originally unsafe composition (2)', () => {
+    return composition4('cheese', 'spinach').then((val) => {
       assert.equal(val, 13);
     });
+  });
 
-    await composition4('mushroom', 'pineapple').then((val) => {
+  it('should keep track of errors in an originally unsafe composition (3)', () => {
+    return composition4('mushroom', 'pineapple').then((val) => {
       assert.equal(val, 17);
     });
   });
-}
+});
 
-/**
- * Discarding errors in originally unsafe compositions.
- */
-{
+describe('Discarding errors in originally unsafe compositions', () => {
   const composition1: Composition<any, [string, string], string, string> =
     compose(unsafeTarget);
 
@@ -114,25 +112,26 @@ import { Composition, UnaryComposableFunction, UnreachableFunctionWarning, compo
   const composition3: Composition<any, [string, string], number, never> =
     composition2.catch(resolveErrors);
 
-  test('Keeping track of errors in originally unsafe compositions', async () => {
-    await composition3('pizza', 'tomato').then((val) => {
+  it('should discard errors from an originally unsafe composition (1)', () => {
+    return composition3('pizza', 'tomato').then((val) => {
       assert.equal(val, 11);
     });
+  });
 
-    await composition3('cheese', 'spinach').then((val) => {
+  it('should discard errors from an originally unsafe composition (2)', () => {
+    return composition3('cheese', 'spinach').then((val) => {
       assert.equal(val, 13);
     });
+  });
 
-    await composition3('mushroom', 'pineapple').then((val) => {
+  it('should discard errors from an originally unsafe composition (3)', () => {
+    return composition3('mushroom', 'pineapple').then((val) => {
       assert.equal(val, 17);
     });
   });
-}
+});
 
-/**
- * Stacking compositions
- */
-{
+describe('Stacking compositions', () => {
   const composition1: Composition<any, [string, string], string, never> =
     compose(safeTarget);
 
@@ -145,39 +144,38 @@ import { Composition, UnaryComposableFunction, UnreachableFunctionWarning, compo
   const composition4: Composition<any, [string, string], string, never> =
     composition1.then(composition2).then(composition3);
 
-  test('Stacking compositions', async () => {
-    await composition4('pizza', 'tomato').then((val) => {
+  it('should execute stacked compositions correctly (1)', () => {
+    return composition4('pizza', 'tomato').then((val) => {
       assert.equal(val, 'pizzatomato');
     });
+  });
 
-    await composition4('cheese', 'spinach').then((val) => {
+  it('should execute stacked compositions correctly (2)', () => {
+    return composition4('cheese', 'spinach').then((val) => {
       assert.equal(val, 'cheesespinach');
     });
+  });
 
-    await composition4('mushroom', 'pineapple').then((val) => {
+  it('should execute stacked compositions correctly (3)', () => {
+    return composition4('mushroom', 'pineapple').then((val) => {
       assert.equal(val, 'mushroompineapple');
     });
   });
-}
+});
 
-/**
- *
- */
-{
+describe('Scoping compositions', () => {
   const composition: Composition<string, [string, string], string, never> =
     compose(scopedTarget);
 
-  test('Scoped compositions', async () => {
-    await composition.call('prefix', 'pizza', 'tomato').then((val) => {
+  it('should run the composition with the given scope', () => {
+    return composition.call('prefix', 'pizza', 'tomato').then((val) => {
       assert.equal(val, 'prefixpizzatomato');
     });
   });
-}
+});
 
 /**
- * Unreachable error path compositions.
- *
- * The below tests confirm that compositions that will never fail are properly
+ * The block below confirms that compositions that will never fail are properly
  * typed.
  */
 {
@@ -189,11 +187,9 @@ import { Composition, UnaryComposableFunction, UnreachableFunctionWarning, compo
 
   (): (fn: UnreachableFunctionWarning) => any =>
     composition.catch;
-}
+};
 
 /**
- * Unreachable happy path compositions.
- *
  * Although this sort of composition is highly undesireable, the below tests
  * ensure that "fail only" compositions are possible.
  */
