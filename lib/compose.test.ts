@@ -1,7 +1,7 @@
 import { Promise } from '@emphori/promise';
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { Composition, UnaryComposableFunction, UnreachableFunctionWarning, compose, reject, resolve } from './compose.js';
+import { Composition, UnaryComposableFunction, UnreachableFunctionWarning, compose, reject, resolve, tap } from './compose.js';
 
 describe('Maintaining safe compositions', () => {
   const composition1: Composition<any, [string, string], string, never> =
@@ -170,6 +170,33 @@ describe('Scoping compositions', () => {
   it('should run the composition with the given scope', () => {
     return composition.call('prefix', 'pizza', 'tomato').then((val) => {
       assert.equal(val, 'prefixpizzatomato');
+    });
+  });
+});
+
+describe('resolve', () => {
+  it('should return a resolved Promise', () => {
+    return resolve('1').then((val): any => {
+      return assert.equal(val, '1');
+    });
+  });
+});
+
+describe('reject', () => {
+  it('should return a rejected Promise', () => {
+    return reject('1').catch((val): any => {
+      return assert.equal(val, '1');
+    });
+  });
+});
+
+describe('tap', () => {
+  const composition: Composition<void, [string, string], string, never> =
+    compose(safeTarget).then(tap(() => resolve('GoodbyeWorld')));
+
+  it('should not affect the return value of the Promise', () => {
+    return composition('Hello', 'World').then((val) => {
+      return assert.equal(val, 'HelloWorld');
     });
   });
 });

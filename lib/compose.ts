@@ -38,28 +38,38 @@ export interface Composition<C1, I1 extends any[], R1, E1> extends ComposableFun
  * @param fn - The function to compose
  */
 export function compose<C1, I1 extends any[], R1, E1 = unknown>(fn: ComposableFunction<C1, I1, R1, E1>): Composition<C1, I1, R1, E1> {
-  return Object.setPrototypeOf(function (this: C1, ...args: I1) {
-    return fn.apply(this, args);
-  }, compose);
+  return Object.setPrototypeOf(function (this: C1) {
+    return fn.apply(this, arguments as any as I1);
+  }, composable);
 }
 
-Object.defineProperty(compose, 'then', {
-  value: function (this: any, fn: any): any {
-    const run = this;
-    return compose(function (...args) {
-      return run.apply(this, args).then((val: any) => fn.call(this, val));
-    });
-  },
-});
+function composable () {}
 
-Object.defineProperty(compose, 'catch', {
-  value: function (this: any, fn: any): any {
-    const run = this;
-    return compose(function (...args) {
-      return run.apply(this, args).catch((val: any) => fn.call(this, val));
-    });
-  },
-});
+composable.then = function (this: any, fn: any): any {
+  const run = this;
+  return compose(function () {
+    return run.apply(this, arguments).then((val: any) => fn.call(this, val));
+  });
+}
 
-export const resolve: typeof Promise.resolve = Promise.resolve.bind(Promise);
-export const reject: typeof Promise.reject = Promise.reject.bind(Promise);
+composable.catch = function (this: any, fn: any): any {
+  const run = this;
+  return compose(function () {
+    return run.apply(this, arguments).catch((val: any) => fn.call(this, val));
+  });
+}
+
+// export const resolve: typeof Promise.resolve = Promise.resolve.bind(Promise);
+// export const reject: typeof Promise.reject = Promise.reject.bind(Promise);
+
+// export const resolve = <T>(_: T) => Promise.resolve<T>(_);
+// export const reject = <T>(_: T) => Promise.reject<T>(_);
+
+export function resolve<T>(_: T) { return Promise.resolve<T>(_) }
+export function reject<T>(_: T) { return Promise.reject<T>(_) }
+
+export function tap<C1, I1, E1>(fn: ComposableFunction<C1, [I1], any, E1>) {
+  return function (this: C1, val: I1) {
+    return fn.call(this, val).then(() => val);
+  }
+}
